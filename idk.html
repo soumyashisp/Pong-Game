@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<style type="text/css">
+		table{
+			border-collapse: collapse;
+			border-spacing:0;
+			tab-size:0;
+		}
+		td{border:0;margin:0;padding:0;		}
+		th{border:0;margin:0;padding:0;		}
+
+		
+
+	</style>
+</head>
+<body style="background-color: black">
+<div id="note" style="width :250px;height:200px;position: absolute; right:20px;bottom:2px;color:white; z-index: 4;top:200px;justify-content: center;">
+	<p style="align-items: center;width:100px;position: relative;left:center;">Note:</p>
+	<p>* Speed will increase gradually</p>
+	<p>* Try not to press both buttons </p><p>   at a time </p>
+	<p>* Elastic Collisions would be</p><p>   a bad assumption ;) :p </p>
+
+
+</div>
+<button style="position: absolute;left:50%;font-size: 3em;font-family: calibri; bottom :2px" onclick="window.location.reload()">START</button>
+
+<div  id="score" style="position: absolute; width:250px;right:10px;top:50px;font-family: calibri;font-size:3em;color: yellow">		
+Score  : 0
+</div>
+
+<div id="center" style="z-index:3;  width: 200px;left:250px;top:150px;position: absolute;font-size: 10em;color:white;height:200px;">Ready</div>
+
+
+
+
+</body>
+
+
+
+
+
+<script type="text/javascript">
+
+
+	
+//grid fromation starts////////////////////////
+var grid=document.createElement("TABLE");
+grid.style.border="solid 1px white";
+grid.style.position="absolute";grid.style.top="0px";grid.style.width="1000px";grid.style.height="500px";
+grid.style.left="0px";
+
+
+
+for (var i=0;i<25;i++)
+{
+	var r =grid.insertRow(i);
+	for(var j=0;j<50;j++)
+	{
+		var c=r.insertCell(j);
+		c.style.width="20px";c.style.height="20px";
+		//setting the positions///////////////////////////////////////////////////////////
+		if(!grid.rows[i].cells[j-1])
+			{grid.rows[i].cells[j].left="0px";}
+		else{grid.rows[i].cells[j].left=parseInt(grid.rows[i].cells[j-1].left)+20+"px";
+	}
+
+		if(!grid.rows[i-1])
+			{grid.rows[i].cells[j].top="0px";}
+		else{grid.rows[i].cells[j].top=parseInt(grid.rows[i-1].cells[j].top)+20+"px";}
+
+		//setting ends///////////////////////////////////////////////////////////////////////
+		
+	}
+}
+grid.style.background="black";
+document.body.appendChild(grid);
+
+//grid formation ends//////////////////////////
+
+function createBody()
+{	
+
+	var bt=document.createElement("table");
+	
+
+	bt.style.position="absolute";
+	bt.style.top="480px";	
+	bt.style.left="460px";	
+
+	
+		var r=bt.insertRow(0);
+		
+		for(var j=0;j<5;j++)
+		{
+			var c=r.insertCell(j);
+			c.style.width="20px";
+			c.style.height="20px";
+
+			
+		}
+	
+
+		bt.rows[0].cells[0].style.background="white";
+		bt.rows[0].cells[1].style.background="white";
+		bt.rows[0].cells[2].style.background="white";
+		bt.rows[0].cells[3].style.background="white";
+		bt.rows[0].cells[4].style.background="white";
+		
+		
+	return bt;
+
+}
+
+function createEnemy(){
+
+	var e=document.createElement('div');
+	e.style="width:20px;height:20px; position:absolute;top:0px;background:yellow;";
+	//e.style.left=Math.floor(Math.random()*400)+"px";
+	e.style.left="0px";
+	//e.innerHTML="hello";
+	return e;
+
+
+
+}
+
+
+
+
+
+
+
+
+///////////////////////////////actual game login starts///////////////////////////
+
+//add event listener to window will keep listening 
+var code=0;// depending on this value movemetn wll take place
+var up=true;
+
+window.addEventListener("keydown",function(){
+	up=false;
+	if(window.event.keyCode==37){code=1;}	if(window.event.keyCode==39){code=2;}	if(window.event.keyCode==38){code=3;}
+	//if(window.event.keyCode==40){code=4;}
+	
+});
+window.addEventListener("keyup",function(){
+
+	up =true;
+
+	
+});
+
+
+
+
+
+
+//function game starts ///////////////////
+
+var fbody=createBody();
+	var enemy=createEnemy();
+	document.body.appendChild(fbody);
+	document.body.appendChild(enemy);
+
+
+function game(){
+
+
+	
+
+
+	//var index=Math.floor(Math.random()*4;
+	//console.log("index is ",index));
+	
+
+	var changed=1; //vertical velocity of ball
+	var changel=1;
+	var speed=3;// initial v of blade
+///////////////////////////////////////////////////////////////////////INTERVAL START //////////////////
+	var ti=Math.floor(new Date().getTime()/1000);
+	//var twice=false;
+	var s=setInterval(function(){
+			console.log(up);
+
+
+		var score=Math.floor(new Date().getTime()/1000)-ti;
+		
+		//if(score >=10 && (!twice)){twice=true;changed++;}
+		console.log(score);
+		document.getElementById("score").innerHTML="Score : " +(score);
+ 		if(changed<0 && (parseInt(enemy.style.top)==0 || parseInt(enemy.style.top)==460)){changed=-Math.floor(score/10+1);}
+		else if(changed>0 && (parseInt(enemy.style.top)==0 || parseInt(enemy.style.top)==460)){changed=Math.floor(score/10+1);}
+		speed=Math.floor(score/10)/2+2;
+
+		var balli=parseInt(enemy.style.left);
+		var bladei=parseInt(fbody.style.left);
+		
+		
+		if(parseInt(enemy.style.top)<480)
+		{
+			enemy.style.top=parseInt(enemy.style.top)+changed+"px";  //change-down
+			enemy.style.left=parseInt(enemy.style.left)+changel+"px"; // change-left
+
+
+
+
+			if(parseInt(enemy.style.top )>=480 && (balli-bladei<-19 ||balli-bladei >99) )
+				{alert("MISSED !! \n Your score :  "+score );clearInterval(s);return;}// game over situation
+			//else if its not a game over situation then boundary conditions
+			//collisions
+			else if(parseInt(enemy.style.left)>=980|| parseInt(enemy.style.left)<=0){changel=-changel;}
+			
+			
+			else if((parseInt(enemy.style.top)>=460 && balli-bladei>=-19 && balli-bladei <=99) )
+			{
+
+				changed=-changed;
+				console.log(changed);
+				changel=Math.floor(Math.random()*5)-2;
+			}
+
+			if(parseInt(enemy.style.top)<=0)
+			{
+
+				changed=-changed;
+			}
+
+
+
+
+
+		}
+			else if(parseInt(enemy.style.top )>460)
+				{
+					alert("MISSED!! \n Your score :  "+score*100);clearInterval(s);
+				}
+
+			if(code==1 && (!up))//left
+			{	
+						
+						if(parseInt(fbody.style.left)>0)
+						{
+							
+							fbody.style.left=parseInt(fbody.style.left)-speed+"px";
+
+						}
+						
+			}
+		else if(code==2 && !up)//right
+			{			
+						if(parseInt(fbody.style.left)<900)
+						{
+							
+							fbody.style.left=parseInt(fbody.style.left)+speed+"px";
+
+						}
+			}
+	
+	
+
+		},6);////////////////////////////////////////////////////////////////////////////startinterval ends
+
+}
+/////function game ends////////////////////////////////////////////
+
+
+
+var center=document.getElementById("center");
+
+setTimeout(function(){
+	center.innerHTML="START";
+
+},2000);
+
+var t=-10;
+var opacity=setInterval(function()
+{	
+	if(t==40){clearInterval(opacity);return;}
+	else if(++t==10){t=-10;}
+	else
+	{	
+		document.getElementById('center').style.opacity=Math.abs(t/10-1);
+	}
+	
+},100);
+
+
+setTimeout(function(){
+	center.innerHTML="  ";
+
+},4000);
+
+
+
+setTimeout(function(){
+	game();
+
+},3000);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/////////////////////main
+
+
+
+
+
+
+
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+</html>
